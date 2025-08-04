@@ -1,0 +1,55 @@
+formatter: markdown
+
+sections:
+  hide:
+    - header
+    - footer
+
+content: |-
+  # Q1 Terraform Configuration
+
+  > This configuration provisions an Azure Resource Group and utilizes the Storage module to create a Storage Account and Container.
+
+  ## Usage
+
+  ```sh
+  # Initialize Terraform
+  terraform init
+
+  # Review the execution plan
+  terraform plan --var-file .\flaschenpost-dev.tfvars
+
+  # Apply the configuration
+  terraform apply --var-file .\flaschenpost-dev.tfvars
+
+  # Destroy all resources
+  terraform destroy --var-file .\flaschenpost-dev.tfvars
+  ```
+
+  {{ .Requirements }}
+
+  {{ .Providers }}
+
+  {{ .Modules }}
+
+  {{ .Resources }}
+
+  {{ .Inputs }}
+
+  {{ .Outputs }}
+
+output:
+  file: README.md
+
+sort:
+  enabled: true
+  by: type
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: true
+  escape: true
+  html: true
+  indent: 2

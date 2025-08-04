@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Template
+metadata:
+  name: azure-terraform-template
+  title: Terraform Infrastructure Provisioning Template
+  description: Template for generating Terraform configurations for Azure infrastructure.
+spec:
+  type: infrastructure
+  path: ./template.yaml
+  owner: jehangir

@@ -1,0 +1,62 @@
+formatter: markdown
+
+sections:
+  hide:
+    - header
+    - footer
+
+content: |-
+  # Azure Storage Module
+
+  > This module provisions the following resources in Azure:
+  > - A Storage Account
+  > - A Private Storage Container
+
+  ## Usage
+
+  ```hcl
+  module "storage" {
+    source                   = "../modules/storage"
+    resource_group_name      = "example-rg"
+    resource_group_location  = "West Europe"
+    storage_account_name     = "examplestorage"
+    storage_account_sku      = "Standard_LRS"
+    storage_access_tier      = "Hot"
+    container_name           = "private-container"
+    container_access_type    = "private"
+    storage_account_tags = {
+      environment = "dev"
+    }
+  }
+  ```
+
+  {{ .Requirements }}
+
+  {{ .Providers }}
+
+  {{ .Modules }}
+
+  {{ .Resources }}
+
+  {{ .Inputs }}
+
+  {{ .Outputs }}
+
+output:
+  file: README.md
+
+sort:
+  enabled: true
+  by: type
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: true
+  escape: true
+  html: true
+  indent: 2
+  required: true
+  sensitive: true
+  type: true

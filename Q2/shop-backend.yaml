@@ -1,0 +1,82 @@
+# Deployment for the shop-backend application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shop-backend
+  template:
+    metadata:
+      labels:
+        app: shop-backend
+    spec:
+      containers:
+        - name: shop-backend
+          image: strm/helloworld-http:latest
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            failureThreshold: 2
+---
+# CronJob to output Hello SRE every 30 minutes
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-sre-cronjob
+spec:
+  schedule: "*/30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: hello
+              image: busybox
+              args:
+                - /bin/sh
+                - -c
+                - echo "Hello SRE"
+          restartPolicy: OnFailure
+---
+# Service to expose the shop-backend application
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-backend-service
+spec:
+  selector:
+    app: shop-backend
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# Ingress resource to expose the shop-backend service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shop-backend-ingress
+spec:
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shop-backend-service
+                port:
+                  number: 80

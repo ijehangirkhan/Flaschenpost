@@ -1,0 +1,97 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: azure-terraform-template
+  title: Terraform Infrastructure Provisioning Template
+  description: Template for generating Terraform configurations for Azure infrastructure.
+spec:
+  owner: jehangir
+  type: infrastructure
+
+  parameters:
+    - title: Azure Configuration
+      required: [subscription_id]
+      properties:
+        subscription_id:
+          type: string
+          title: Azure Subscription ID
+          default: "00000000-0000-0000-0000-000000000000"
+
+    - title: Resource Group
+      required: [resource_group_name]
+      properties:
+        resource_group_name:
+          type: string
+          title: Resource Group Name
+        resource_group_location:
+          type: string
+          title: Resource Group Location
+          default: "West Europe"
+        resource_group_tags:
+          type: object
+          title: Resource Group Tags
+          description: Add Resource Group tags as key-value pairs
+          additionalProperties:
+            type: string
+          default:
+            department: "SRE"
+
+    - title: Storage Account
+      required: [storage_account_name]
+      properties:
+        storage_account_name:
+          type: string
+          title: Storage Account Name
+        storage_account_sku:
+          type: string
+          title: SKU (e.g., Standard_LRS)
+          default: "Standard_LRS"
+          enum: ["Standard_LRS", "Standard_GRS", "Standard_RAGRS", "Standard_ZRS", "Standard_GZRS", "Standard_RAGZRS", "Premium_LRS", "Premium_ZRS"]
+        storage_access_tier:
+          type: string
+          title: Access Tier
+          default: "Hot"
+          enum: ["Hot", "Cool", "Cold", "Premium"]
+        storage_account_tags:
+          type: object
+          title: Storage Account Tags
+          description: Add Storage Account tags as key-value pairs
+          additionalProperties:
+            type: string
+          default:
+            department: "SRE"
+
+    - title: Storage Container
+      required: [container_name]
+      properties:
+        container_name:
+          type: string
+          title: Container Name
+        container_access_type:
+          type: string
+          title: Container Access Type
+          default: "private"
+          enum: ["private", "blob", "container"]
+
+  steps:
+    - id: fetch
+      name: Generate Terraform Files
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          subscription_id: ${{ parameters.subscription_id }}
+          resource_group_name: ${{ parameters.resource_group_name }}
+          resource_group_location: ${{ parameters.resource_group_location }}
+          resource_group_tags: ${{ parameters.resource_group_tags }}
+          storage_account_name: ${{ parameters.storage_account_name }}
+          storage_account_sku: ${{ parameters.storage_account_sku }}
+          storage_access_tier: ${{ parameters.storage_access_tier }}
+          storage_account_tags: ${{ parameters.storage_account_tags }}
+          container_name: ${{ parameters.container_name }}
+          container_access_type: ${{ parameters.container_access_type }}
+
+  output:
+    links:
+      - title: View Generated Terraform
+        url: ./terraform
